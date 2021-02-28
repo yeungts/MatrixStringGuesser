@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Test1
+namespace MatrixStringGuesser
 {
     /// <summary>
     /// Interaction logic for InputPrompt.xaml

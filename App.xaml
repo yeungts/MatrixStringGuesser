@@ -1,7 +1,7 @@
-﻿<Application x:Class="Test1.App"
+﻿<Application x:Class="MatrixStringGuesser.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Test1"
+             xmlns:local="clr-namespace:MatrixStringGuesser"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <SolidColorBrush x:Key="theBackgroundBrush" Color="White"/>
