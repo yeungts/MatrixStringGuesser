@@ -1,0 +1,15 @@
+﻿<Application x:Class="Test1.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Test1"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <SolidColorBrush x:Key="theBackgroundBrush" Color="White"/>
+        <SolidColorBrush x:Key="theBtnBackgroundBrush" Color="LightGray"/>
+        <SolidColorBrush x:Key="theForegroundBrush" Color="Black"/>
+        <Style x:Key="windowStyle" TargetType="{x:Type Window}">
+            <Setter Property="Background" Value="{DynamicResource theBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource theForegroundBrush}"/>
+        </Style>
+    </Application.Resources>
+</Application>

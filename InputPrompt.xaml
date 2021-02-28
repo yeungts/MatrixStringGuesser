@@ -1,0 +1,46 @@
+﻿<Window x:Class="Test1.InputPrompt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Test1"
+        mc:Ignorable="d" Style="{DynamicResource windowStyle}"
+        Title="Enter a string" Height="200" Width="450"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <Style x:Key="lblInputStringStyle" TargetType="Label">
+            <Setter Property="Content" Value="Enter a string:"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Margin" Value="78,60,0,0"/>
+            <Setter Property="Background" Value="{DynamicResource theBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource theForegroundBrush}"/>
+        </Style>
+        <Style x:Key="txtInputString" TargetType="TextBox">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="left"/>
+            <Setter Property="Margin" Value="166,64,0,0"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="192"/>
+            <Setter Property="Background" Value="{DynamicResource theBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource theForegroundBrush}"/>
+        </Style>
+        <Style x:Key="btnSubmitStyle" TargetType="Button">
+            <Setter Property="Content" Value="Submit"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Margin" Value="0,106,0,0"/>
+            <Setter Property="Background" Value="{DynamicResource theBtnBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource theForegroundBrush}"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <Label x:Name="lblInputString" Style="{DynamicResource lblInputStringStyle}"/>
+        <TextBox x:Name="txtInputString" Style="{DynamicResource txtInputString}"/>
+        <Button x:Name="btnSubmit" Click="btnSubmit_Click" Style="{DynamicResource btnSubmitStyle}"/>
+
+    </Grid>
+</Window>

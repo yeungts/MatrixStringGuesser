@@ -1,0 +1,202 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace Test1
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private Random r = new Random();
+        private Coordinate[,] matrix;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            tbxMatrix.Text = "Matrix is currently empty";
+            rbBrightMode.IsChecked = true;
+        }
+
+        private void btnGetMatrix_Click(object sender, RoutedEventArgs e)
+        {
+            String inputString;
+            tbxMatrix.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            tbxMatrix.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+
+            try
+            {
+                int width = Convert.ToInt32(txtWidth.Text);
+                if (width < 5)
+                { throw new ArgumentOutOfRangeException(); }
+                else if (width > 30)
+                {
+                    tbxMatrix.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    tbxMatrix.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+                }
+
+                tbxMatrix.Text = GetMatrix(ref matrix, width, r);
+
+                inputString = GetUserInput();
+
+                if (inputString == "") { return; }
+
+                IsInputExist(matrix, inputString);
+
+            }
+            catch (FormatException ex)
+            {
+                MessageBox.Show("Please enter positive number", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                MessageBox.Show("Width have to be greater than or equal to 5", "Invalid value", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void rbDarkMode_Checked(object sender, RoutedEventArgs e)
+        {
+            DarkMode();
+        }
+
+        private void rbBrightMode_Checked(object sender, RoutedEventArgs e)
+        {
+            BrightMode();
+        }
+
+        private string GetMatrix(ref Coordinate[,] matrix, int width, Random r)
+        {
+            matrix = new Coordinate[width, width];
+            String output = "";
+            for (int y = 0; y < width; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    matrix[x, y] = new Coordinate(Convert.ToChar(r.Next(97, 123)), x, y);
+
+                    if (x == (width - 1))
+                    { output += String.Format("{0}\n", matrix[x, y].Character); }
+                    else
+                    { output += String.Format("{0} ", matrix[x, y].Character); }
+                }
+            }
+            return output;
+        }
+
+        private String GetUserInput()
+        {
+            // Prompt user for string input
+            InputPrompt promptBox = new InputPrompt();
+
+            do
+            {
+                promptBox.ShowDialog();
+                if (promptBox.inputString == null) { return ""; }
+                else if (promptBox.inputString == "")
+                {
+                    promptBox.inputString = null;
+                    MessageBox.Show("Please enter a string to search", "Missing input", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (promptBox.inputString.Length == 1)
+                {
+                    MessageBox.Show("Please enter a string to search", "Single Character not allowed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    promptBox.inputString = null;
+                }
+
+            } while (promptBox.inputString == null || promptBox.inputString == "");
+
+            return promptBox.inputString;
+        }
+
+        private bool IsInputExist(Coordinate[,] matrix, String inputString)
+        {
+            int stringIndex = 0;
+            char[] inputStringArray = inputString.ToCharArray();
+            String charPositions = "";
+
+            for (int x = 0; x < matrix.GetLength(0) && stringIndex != (inputStringArray.Length - 1); x++)
+            {
+                for (int y = 0; y < matrix.GetLength(1) && stringIndex != (inputStringArray.Length - 1); y++)
+                {
+                    if (inputStringArray[stringIndex] == matrix[x, y].Character)
+                    {
+                        for (int direction = 0; direction < 8 && stringIndex != (inputStringArray.Length - 1); direction++)
+                        {
+                            charPositions = "";
+                            stringIndex = 0;
+                            int newX = Control.GetNextX(direction, x);
+                            int newY = Control.GetNextY(direction, y);
+                            // This string will tell user where are the characters, and store the position of the first matching character
+                            charPositions += String.Format("{0}: (x: {1}, y: {2}); ", matrix[x, y].Character, x, y);
+
+                            do
+                            {
+                                // check if the character in the next coordinate matches the next character in string
+                                if (newX >= 0 && newX <= (matrix.GetLength(0) - 1)
+                                    && newY >= 0 && newY <= (matrix.GetLength(1) - 1)
+                                    && matrix[newX, newY].Character == inputStringArray[stringIndex + 1]
+                                    && stringIndex != (inputStringArray.Length - 1))
+                                {
+                                    // if the character in the next coordinate matches the next character in string, 
+                                    // get the next coordinate with the same direction and loop through
+                                    stringIndex++;
+                                    charPositions += String.Format("{0}: (x: {1}, y: {2}); ", matrix[newX, newY].Character, newX, newY);
+
+                                    // only perfrom the following if statement when the cursor isn't at the end of the user input
+                                    if (stringIndex != (inputStringArray.Length - 1))
+                                    {
+                                        newX = Control.GetNextX(direction, newX);
+                                        if (newX < 0 || newX >= matrix.GetLength(0)) { break; }
+                                        else
+                                        { newY = Control.GetNextY(direction, newY); }
+                                    }
+                                }
+                                else
+                                { break; }
+                            } while (stringIndex != (inputStringArray.Length - 1));
+                        }
+                    }
+                }
+            }
+
+            if (stringIndex != (inputStringArray.Length - 1))
+            { 
+                MessageBox.Show("\"" + inputString + "\" is not found");
+                return false;
+            }
+            else
+            { 
+                MessageBox.Show("\"" + inputString + "\" is found at:\n" + charPositions);
+                return true;
+            }
+        }
+
+        private void DarkMode()
+        {
+            Application.Current.Resources["theBtnBackgroundBrush"] = new SolidColorBrush(Color.FromRgb(129, 129, 129));
+            Application.Current.Resources["theBackgroundBrush"] = new SolidColorBrush(Color.FromRgb(40, 40, 40));
+            Application.Current.Resources["theForegroundBrush"] = new SolidColorBrush(Colors.White);
+        }
+
+        private void BrightMode()
+        {
+            Application.Current.Resources["theBtnBackgroundBrush"] = new SolidColorBrush(Colors.LightGray);
+            Application.Current.Resources["theBackgroundBrush"] = new SolidColorBrush(Colors.White);
+            Application.Current.Resources["theForegroundBrush"] = new SolidColorBrush(Colors.Black);
+        }
+
+    }
+
+}
